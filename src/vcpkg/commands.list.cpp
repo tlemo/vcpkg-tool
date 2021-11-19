@@ -139,7 +139,6 @@ namespace vcpkg::Commands::List
     static void list_manifest_mode(const VcpkgPaths& paths, const Json::Object* manifest)
     {
         const auto& manifest_path = paths.get_manifest_path().value_or_exit(VCPKG_LINE_INFO);
-        const auto& configuration = paths.get_configuration();
         auto maybe_manifest_scf = SourceControlFile::parse_manifest_object(manifest_path, *manifest);
         if (!maybe_manifest_scf)
         {
@@ -150,14 +149,6 @@ namespace vcpkg::Commands::List
         }
 
         auto& manifest_scf = *maybe_manifest_scf.value_or_exit(VCPKG_LINE_INFO);
-        if (configuration.requests_configure_environment())
-        {
-            if (run_configure_environment_command(paths, "list"))
-            {
-                Checks::exit_fail(VCPKG_LINE_INFO);
-            }
-        }
-
         for (auto&& dependency : manifest_scf.core_paragraph->dependencies)
         {
             print2(dependency.name, "\n");
