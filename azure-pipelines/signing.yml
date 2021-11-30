@@ -53,7 +53,7 @@ jobs:
       displayName: 'Lock Installer Scripts Versions'
       inputs:
         pwsh: true
-        filePath: init-vcpkg/lock-versions.ps1
+        filePath: vcpkg-init/lock-versions.ps1
         arguments: '-Destination "$(Build.BinariesDirectory)" -VcpkgBaseVersion $(VCPKG_BASE_VERSION)'
     # Build and test vcpkg-ce
     - task: PowerShell@2
@@ -128,14 +128,14 @@ jobs:
         msbuildArguments: '/p:OutDir=$(Build.BinariesDirectory)\ /p:IntermediateOutputPath=$(Build.BinariesDirectory)\'
       # Note that signing must happen before packing step because the packs contain files that are themselves signed.
     - script: |
-        copy "$(Build.BinariesDirectory)\init-vcpkg.ps1" "$(Build.BinariesDirectory)\init-vcpkg.cmd"
+        copy "$(Build.BinariesDirectory)\vcpkg-init.ps1" "$(Build.BinariesDirectory)\vcpkg-init.cmd"
       displayName: 'Duplicate Install Scripts'
     - task: Powershell@2
       displayName: 'Build vcpkg-standalone-bundle.tar.gz'
       inputs:
         pwsh: true
-        filePath: init-vcpkg/mint-standalone-bundle.ps1
-        arguments: '-DestinationTarballName "$(Build.BinariesDirectory)\vcpkg-standalone-bundle.tar.gz" -TempPath standalone-temp "$(Build.BinariesDirectory)\init-vcpkg.cmd" "$(Build.BinariesDirectory)\init-vcpkg.ps1"'
+        filePath: vcpkg-init/mint-standalone-bundle.ps1
+        arguments: '-DestinationTarballName "$(Build.BinariesDirectory)\vcpkg-standalone-bundle.tar.gz" -TempPath standalone-temp "$(Build.BinariesDirectory)\vcpkg-init.cmd" "$(Build.BinariesDirectory)\vcpkg-init.ps1"'
     - script: npm pack
       displayName: Create vcpkg-ce Pack
       workingDirectory: $(Build.BinariesDirectory)/vcpkg-ce
@@ -143,8 +143,8 @@ jobs:
         mkdir "$(Build.ArtifactStagingDirectory)\staging"
         move "$(Build.BinariesDirectory)\vcpkg-ce\vcpkg-ce-*.tgz" "$(Build.ArtifactStagingDirectory)\staging\vcpkg-ce.tgz"
         move "$(Build.BinariesDirectory)\vcpkg-standalone-bundle.tar.gz" "$(Build.ArtifactStagingDirectory)\staging\vcpkg-standalone-bundle.tar.gz"
-        move "$(Build.BinariesDirectory)\init-vcpkg.ps1" "$(Build.ArtifactStagingDirectory)\staging\init-vcpkg.ps1"
-        move "$(Build.BinariesDirectory)\init-vcpkg.cmd" "$(Build.ArtifactStagingDirectory)\staging\init-vcpkg.cmd"
+        move "$(Build.BinariesDirectory)\vcpkg-init.ps1" "$(Build.ArtifactStagingDirectory)\staging\vcpkg-init.ps1"
+        move "$(Build.BinariesDirectory)\vcpkg-init.cmd" "$(Build.ArtifactStagingDirectory)\staging\vcpkg-init.cmd"
       displayName: 'Arrange Architecture-independent Files for Staging'
     - task: Powershell@2
       displayName: Generate Arch-independent SHA512s
@@ -372,8 +372,8 @@ jobs:
         script: |
           mkdir "$(Build.ArtifactStagingDirectory)\drop"
 
-          move "$(Build.ArtifactStagingDirectory)\staging\init-vcpkg.cmd" "$(Build.ArtifactStagingDirectory)\drop\init-vcpkg.cmd"
-          move "$(Build.ArtifactStagingDirectory)\staging\init-vcpkg.ps1" "$(Build.ArtifactStagingDirectory)\drop\init-vcpkg.ps1"
+          move "$(Build.ArtifactStagingDirectory)\staging\vcpkg-init.cmd" "$(Build.ArtifactStagingDirectory)\drop\vcpkg-init.cmd"
+          move "$(Build.ArtifactStagingDirectory)\staging\vcpkg-init.ps1" "$(Build.ArtifactStagingDirectory)\drop\vcpkg-init.ps1"
           move "$(Build.ArtifactStagingDirectory)\staging\vcpkg-ce.tgz" "$(Build.ArtifactStagingDirectory)\drop\vcpkg-ce.tgz"
           move "$(Build.ArtifactStagingDirectory)\staging\vcpkg-glibc" "$(Build.ArtifactStagingDirectory)\drop\vcpkg-glibc"
           move "$(Build.ArtifactStagingDirectory)\staging\vcpkg-muslc" "$(Build.ArtifactStagingDirectory)\drop\vcpkg-muslc"
