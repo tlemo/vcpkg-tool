@@ -95,7 +95,7 @@ endif()
 
 if(NOT DEFINED VCPKG_BASE_VERSION OR VCPKG_BASE_VERSION STREQUAL "")
     if(VCPKG_OFFICIAL_BUILD)
-      message(FATAL_ERROR "VCPKG_BASE_VERSION must be set for official builds.")  
+        message(FATAL_ERROR "VCPKG_BASE_VERSION must be set for official builds.")
     endif()
 
     set(VCPKG_BASE_VERSION "9999-99-99")
