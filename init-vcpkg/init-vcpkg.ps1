@@ -72,7 +72,7 @@ if( $ENV:VCPKG_ROOT ) {
 }
 
 $VCPKG = "${VCPKG_ROOT}/vcpkg.exe"
-$SCRIPT:VCPKG_SCRIPT = "${VCPKG_ROOT}/vcpkg.ps1"
+$SCRIPT:VCPKG_SCRIPT = "${VCPKG_ROOT}/vcpkg-init.ps1"
 
 $reset = $args.IndexOf('--reset-vcpkg') -gt -1
 $remove = $args.IndexOf('--remove-vcpkg') -gt -1
@@ -147,7 +147,7 @@ $shh = New-Module -name vcpkg -ArgumentList @($VCPKG,$VCPKG_ROOT) -ScriptBlock {
     if( -not (test-path $VCPKG )) {
       write-error "vcpkg is not installed."
       write-host -nonewline "You can reinstall vcpkg by running "
-      write-host -fore green "iex (iwr -useb https://aka.ms/install-vcpkg.ps1)"
+      write-host -fore green "iex (iwr -useb https://aka.ms/init-vcpkg.ps1)"
       return
     }
 
