@@ -67,7 +67,6 @@ Z_VCPKG_bootstrap() {
 
 Z_VCPKG_cleanup() {
   # clear things that we're not going to need for the long term
-  unset Z_VCPKG_NESTED
   unset Z_VCPKG_REMOVE
   unset Z_VCPKG_ARGS
   if [ -f "${Z_VCPKG_POSTSCRIPT}" ]; then
@@ -80,7 +79,7 @@ Z_VCPKG_cleanup() {
 Z_VCPKG_remove() {
   Z_VCPKG_cleanup
   if [ -d "$VCPKG_ROOT" ]; then
-    rm -f "$VCPKG_ROOT"
+    rm -rf "$VCPKG_ROOT"
   fi
 
   unset -f Z_VCPKG_init > /dev/null 2>&1
@@ -110,12 +109,6 @@ Z_VCPKG_bootstrap
 if [ $? -eq 1 ]; then
   Z_VCPKG_cleanup
   return 1;
-fi
-
-if [ -z $Z_VCPKG_NESTED ]; then
-  Z_VCPKG_NESTED=TRUE
-  . "$VCPKG_ROOT/vcpkg-init" $Z_VCPKG_ARGS
-  return # let the real script take over from here.
 fi
 
 # So, we're the real script then.
